@@ -1,13 +1,15 @@
-# ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) Project 3: Web APIs & NLP
+## Reddit Post Natural Language Processing and Classification
+![reddit](images/reddit_logo.png)
 
-### Description
+## Executive Summary
 
-In week four we've learned about a few different classifiers. In week five we'll learn about webscraping, APIs, and Natural Language Processing (NLP). This project will put those skills to the test.
+### Introduction
 
-For project 3, your goal is two-fold:
-1. Using [Pushshift's](https://github.com/pushshift/api) API, you'll collect posts from two subreddits of your choosing.
-2. You'll then use NLP to train a classifier on which subreddit a given post came from. This is a binary classification problem.
+The team is tasked to download data from two separate Reddit categories of data.  Build several classifier models, and sentiment analyzer.
 
+
+Problem statement:
+Given two batches of text content
 
 #### About the API
 
