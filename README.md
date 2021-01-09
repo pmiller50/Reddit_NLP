@@ -5,166 +5,115 @@
 
 ### Introduction
 
-The team is tasked to download data from two separate Reddit categories of data.  Build several classifier models, and sentiment analyzer.
+The team is tasked to model and classify data from two separate Reddit categories, build several classifier models, and a sentiment analyzer. For this project, the two subReddit categories are:
+
+Ask Culinary - a subreddit devoted to food, cooking, sharing recipes, etc.<br>
+![reddit](images/reddit_ask_culinary_logo.png)<br>
+
+and Running - a subreddit pertaining to running, jogging, etc.<br>
+![reddit](images/reddit_running_logo.png)
+
+### Problem Statement
+
+In today's society, there are many opinions on how to best maintain one's mental health. During the world's current battle with Covid-19, many people are becoming isolated from each other, and living more hours of their day alone.
+
+Is being alone necessarily a bad thing? In regards to text classification, would we expect to see more negative sentiment classifications in text that is more related to solo, or independently performed activities?
+
+Many psychological experts agree that a certain amount of alone time can be helpful to one's mental health, but over time humans express an innate desire to interact with others.
+
+According to a recent article on [https://www.psychalive.org](https://www.psychalive.org), an author states several pros and cons to being alone.
+
+Pros:
+ - Allowing our brains to recharge
+ - Increasing productivity
+ - Boost creativity
+ - Gain better understanding of one's self, and better interact with others.
+
+However, the cons of being alone include:
+  - Makes us vulnerable to our inner critics.
+  - Could lead to painful loneliness
+  - Can lead to depression
+  - Bad for our health
+
+From the article [Being Alone: The Pros and Cons of Time Alone](https://www.psychalive.org/being-alone/)
+
+So the general consensus of the medical field seems to agree, that too much alone time is not healthy.
+
+In pursuit of seeing that idea in action, I will create some machine learning models to help demonstrate.
 
 
-Problem statement:
-Given two batches of text content
+Consider the two activities:
+* **Cooking**
 
-#### About the API
+* **Running**
 
-Pushshift's API is fairly straightforward. For example, if I want the posts from [`/r/boardgames`](https://www.reddit.com/r/boardgames), all I have to do is use the following url: https://api.pushshift.io/reddit/search/submission?subreddit=boardgames
+One could argue that cooking may sometimes be an independent activity, but for the most part pertains to family gatherings, holidays, birthdays and other group social occasions. A chef could also be working in a kitchen with other cooks.
 
-To help you get started, we have a primer video on how to use the API: https://youtu.be/AcrjEWsMi_E
+In contrast, running is primarily a solitary activity.  A runner could be in a group, but anyone who has tried to run and talk at the same time knows that even running in groups would not be conducive to social interaction. It is safe to assume that most runners, joggers, or even walkers are doing so independently.
 
----
+In using the VADER SentimentIntensityAnalyzer, certain search words such as **alone**, **lonely**, and other variations, might prove to be a factor in helping to analyze two subreddit categories of text data.
 
-### Requirements
+### Technologies Used
 
-- Gather and prepare your data using the `requests` library.
-- **Create and compare at least two models**. These can be any classifier of your choosing: logistic regression, Naive Bayes, KNN, SVM, Random Forest Classifier, etc.
-  - **Bonus**: use a Naive Bayes classifier
-- Build a robust commit history on github and GHE for this project: at least three commits separated by at least 24 hours each  
-- A Jupyter Notebook with your analysis for a peer audience of data scientists.
-- An executive summary of your results.
-- A short presentation outlining your process and findings for a semi-technical audience.
+* Data Retrieval
 
-**Pro Tip:** You can find a good example executive summary [here](https://www.proposify.biz/blog/executive-summary).
+The main tool to download text content from reddit.com is the [Pushshift API](https://pushshift.io/).
+This allows a user to specify a subreddit name, and download up to 100 posts in JSON format. Using a for loop to initiate many API calls, we can download over 8,000 posts for the AskCulinary subreddit, and over 8,000 posts for the running subreddit.
 
----
+* Data Cleaning
 
-### Necessary Deliverables / Submission
+The pandas library contains several tools to help clean data. Some reddit posts may have garbage or empty data, or have been removed entirely. Regular expressions also help remove unwanted characters, or word fragments.
 
-- Code and executive summary must be in a clearly commented Jupyter Notebook.
-- You must submit your slide deck.
-- Materials must be submitted by **11:59 PM PST on Friday, January 8th 2021**.
-- Presentation must be ready by **09:00 AM PST on Friday, January 8th 2021**.
+CountVectorizer, part of [sklearn's](https://scikit-learn.org/) package, splits up a main body of text into individual words. Unnecessary words can then be easily dropped from the sample data.
 
----
+* Data Modeling
 
-## Rubric
-Your local instructor will evaluate your project (for the most part) using the following criteria.  You should make sure that you consider and/or follow most if not all of the considerations/recommendations outlined below **while** working through your project.
+Modeling is done using many transformers and estimators, all of which are implemented in the sklearn package.
 
-For Project 3 the evaluation categories are as follows:<br>
-**The Data Science Process**
-- Problem Statement
-- Data Collection
-- Data Cleaning & EDA
-- Preprocessing & Modeling
-- Evaluation and Conceptual Understanding
-- Conclusion and Recommendations
+Transformers used:
+* CountVectorizer
+* TfidfVectorizer
 
-**Organization and Professionalism**
-- Organization
-- Visualizations
-- Python Syntax and Control Flow
-- Presentation
+Esimators used:
+* KNeighborsClassifier
+* RandomForestClassifier
+* MultinomialNB
 
-**Scores will be out of 30 points based on the 10 categories in the rubric.** <br>
-*3 points per section*<br>
+GridSearchCV and Pipeline are also used to implement different hyperparameters, and attempt to optimize each model.
 
-| Score | Interpretation |
-| --- | --- |
-| **0** | *Project fails to meet the minimum requirements for this item.* |
-| **1** | *Project meets the minimum requirements for this item, but falls significantly short of portfolio-ready expectations.* |
-| **2** | *Project exceeds the minimum requirements for this item, but falls short of portfolio-ready expectations.* |
-| **3** | *Project meets or exceeds portfolio-ready expectations; demonstrates a thorough understanding of every outlined consideration.* |
+* Sentiment Analysis
+
+A large section of work is doing using SentimentIntensityAnalyzer, part of [nltk.sentiment.vader](https://github.com/cjhutto/vaderSentiment). The Natural Language Toolkit (NLTK), provides several tools to parse and analyze text data.
+
+Every post in both the Ask Culinary and Running subreddits is assigned a compound sentiment score, created by the SentimentIntensityAnalyzer.
+
+These scores are a normalized version of their negative, neutral, and positive rankings, and range from -1 to +1.
+
+The following shows the relative positivity or negativity of all posts in both subreddits.
+![AverageSentimentScores](images/all_posts_scores.png)
 
 
-### The Data Science Process
+In order to support the above thesis regarding the link between **lone**-related words and possible negative sentiment, the Ask Culinary and Running datasets are both searched.
 
-**Problem Statement**
-- Is it clear what the goal of the project is?
-- What type of model will be developed?
-- How will success be evaluated?
-- Is the scope of the project appropriate?
-- Is it clear who cares about this or why this is important to investigate?
-- Does the student consider the audience and the primary and secondary stakeholders?
+In the 8,000 Ask Culinary records, the word **alone** appears 40 times, and the word **lonely** appears twice.
 
-**Data Collection**
-- Was enough data gathered to generate a significant result?
-- Was data collected that was useful and relevant to the project?
-- Was data collection and storage optimized through custom functions, pipelines, and/or automation?
-- Was thought given to the server receiving the requests such as considering number of requests per second?
+In the 8,000 Running records, the word **alone** appears 125 times, along with lesser occurrences of the words: lonely, lone, lonelier, and loneliness.
 
-**Data Cleaning and EDA**
-- Are missing values imputed/handled appropriately?
-- Are distributions examined and described?
-- Are outliers identified and addressed?
-- Are appropriate summary statistics provided?
-- Are steps taken during data cleaning and EDA framed appropriately?
-- Does the student address whether or not they are likely to be able to answer their problem statement with the provided data given what they've discovered during EDA?
+![AskCulinaryAlone](images/alone_culinary.png)
 
-**Preprocessing and Modeling**
-- Is text data successfully converted to a matrix representation?
-- Are methods such as stop words, stemming, and lemmatization explored?
-- Does the student properly split and/or sample the data for validation/training purposes?
-- Does the student test and evaluate a variety of models to identify a production algorithm (**AT MINIMUM:** two classification models, **BONUS:** try a Naive Bayes)?
-- Does the student defend their choice of production model relevant to the data at hand and the problem?
-- Does the student explain how the model works and evaluate its performance successes/downfalls?
+![RunningAlone](images/alone_running.png)
 
-**Evaluation and Conceptual Understanding**
-- Does the student accurately identify and explain the baseline score?
-- Does the student select and use metrics relevant to the problem objective?
-- Does the student interpret the results of their model for purposes of inference?
-- Is domain knowledge demonstrated when interpreting results?
-- Does the student provide appropriate interpretation with regards to descriptive and inferential statistics?
+Another indicator of the overall negativity vs positivity of the Ask Culinary and Running subreddits, is the average of all of the VADER sentiment compound scores for every post in each subreddit.
+This score is calculated with the 9,766 Ask Culinary records, and the 8,081 Running records.
 
-**Conclusion and Recommendations**
-- Does the student provide appropriate context to connect individual steps back to the overall project?
-- Is it clear how the final recommendations were reached?
-- Are the conclusions/recommendations clearly stated?
-- Does the conclusion answer the original problem statement?
-- Does the student address how findings of this research can be applied for the benefit of stakeholders?
-- Are future steps to move the project forward identified?
+![AverageCompoundScores](images/all_scores_compound.png)
 
+The Ask Culinary average compound sentiment score for it's posts was higher (40.37%) than the running posts, which had a compound sentiment score of 37.88%. This implies on average the Ask Culinary posts were more positive.
 
-### Organization and Professionalism
+### Conclusions
 
-**Project Organization**
-- Are modules imported correctly (using appropriate aliases)?
-- Are data imported/saved using relative paths?
-- Does the README provide a good executive summary of the project?
-- Is markdown formatting used appropriately to structure notebooks?
-- Are there an appropriate amount of comments to support the code?
-- Are files & directories organized correctly?
-- Are there unnecessary files included?
-- Do files and directories have well-structured, appropriate, consistent names?
+Using the outputs from the VADER SentimentIntensityAnalyzer module, the Running posts do in fact have a more negative overall sentiment. It is still too early to make any large-scale statements about the human behavior or personal well-being of the users of the Ask Culinary group versus the Running users, but the text collected from the Running subReddit does show a clear (albeit slight) negative bias.
 
-**Visualizations**
-- Are sufficient visualizations provided?
-- Do plots accurately demonstrate valid relationships?
-- Are plots labeled properly?
-- Are plots interpreted appropriately?
-- Are plots formatted and scaled appropriately for inclusion in a notebook-based technical report?
+More research might continue to shed light on the comparison. Other keywords in the corpus might be a factor, or the presence of certain phrases.  Collecting more data could also be beneficial.  The 16,000 or so posts in this study goes back to July 27, 2020. Both subreddits contain thousands more posts to retrieve.
 
-**Python Syntax and Control Flow**
-- Is care taken to write human readable code?
-- Is the code syntactically correct (no runtime errors)?
-- Does the code generate desired results (logically correct)?
-- Does the code follows general best practices and style guidelines?
-- Are Pandas functions used appropriately?
-- Are `sklearn` and `NLTK` methods used appropriately?
-
-**Presentation**
-- Is the problem statement clearly presented?
-- Does a strong narrative run through the presentation building toward a final conclusion?
-- Are the conclusions/recommendations clearly stated?
-- Is the level of technicality appropriate for the intended audience?
-- Is the student substantially over or under time?
-- Does the student appropriately pace their presentation?
-- Does the student deliver their message with clarity and volume?
-- Are appropriate visualizations generated for the intended audience?
-- Are visualizations necessary and useful for supporting conclusions/explaining findings?
-
-
----
-
-### Why did we choose this project for you?
-This project covers three of the biggest concepts we cover in the class: Classification Modeling, Natural Language Processing and Data Wrangling/Acquisition.
-
-Part 1 of the project focuses on **Data wrangling/gathering/acquisition**. This is a very important skill as not all the data you will need will be in clean CSVs or a single table in SQL.  There is a good chance that wherever you land you will have to gather some data from some unstructured/semi-structured sources; when possible, requesting information from an API, but often scraping it because they don't have an API (or it's terribly documented).
-
-Part 2 of the project focuses on **Natural Language Processing** and converting standard text data (like Titles and Comments) into a format that allows us to analyze it and use it in modeling.
-
-Part 3 of the project focuses on **Classification Modeling**.  Given that project 2 was a regression focused problem, we needed to give you a classification focused problem to practice the various models, means of assessment and preprocessing associated with classification.   
+One large lesson learned while using the SentimentIntensityAnalyzer module, was a problem discovered when loading the default library of stop words supplied by the sklearn module. During the initial passes, the word **alone** could not be found in any of the posts' text data. After much consternation, it was discovered that this key search was actually contained in the stop word file. This was removing it from any Count Vectorizing, and would hide it from the final results. Any data science professional should take care while employing a stop word file. It could create unintended consequences, and skewed data.
